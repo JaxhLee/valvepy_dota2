@@ -1,7 +1,4 @@
-syntax = "proto2";
-package dota;
-option optimize_for = SPEED;
-option py_generic_services = false;
+import "dota_shared_enums.proto";
 
 enum EGuildAuditAction {
 	k_EGuildAuditAction_Invalid = 0;
@@ -29,6 +26,7 @@ enum EGuildAuditAction {
 	k_EGuildAuditAction_AdminPermitted = 24;
 	k_EGuildAuditAction_AdminBlocked = 25;
 	k_EGuildAuditAction_AdminBannedUser = 26;
+	k_EGuildAuditAction_AdminExonerated = 27;
 }
 
 enum EGuildChatType {
@@ -67,9 +65,9 @@ message CMsgGuildSummary {
 		optional uint32 guild_current_percentile = 6;
 	}
 
-	optional dota.CMsgGuildInfo guild_info = 1;
+	optional .CMsgGuildInfo guild_info = 1;
 	optional uint32 member_count = 2;
-	repeated dota.CMsgGuildSummary.EventPoints event_points = 3;
+	repeated .CMsgGuildSummary.EventPoints event_points = 3;
 }
 
 message CMsgGuildRole {
@@ -94,10 +92,10 @@ message CMsgGuildInvite {
 
 message CMsgGuildData {
 	optional uint32 guild_id = 1;
-	optional dota.CMsgGuildInfo guild_info = 2;
-	repeated dota.CMsgGuildRole guild_roles = 3;
-	repeated dota.CMsgGuildMember guild_members = 4;
-	repeated dota.CMsgGuildInvite guild_invites = 5;
+	optional .CMsgGuildInfo guild_info = 2;
+	repeated .CMsgGuildRole guild_roles = 3;
+	repeated .CMsgGuildMember guild_members = 4;
+	repeated .CMsgGuildInvite guild_invites = 5;
 }
 
 message CMsgAccountGuildInvite {
@@ -108,7 +106,7 @@ message CMsgAccountGuildInvite {
 
 message CMsgAccountGuildMemberships {
 	repeated uint32 guild_ids = 1;
-	repeated dota.CMsgAccountGuildInvite guild_invites = 2;
+	repeated .CMsgAccountGuildInvite guild_invites = 2;
 }
 
 message CMsgGuildPersonaInfo {
@@ -118,7 +116,7 @@ message CMsgGuildPersonaInfo {
 }
 
 message CMsgAccountGuildsPersonaInfo {
-	repeated dota.CMsgGuildPersonaInfo guild_persona_infos = 1;
+	repeated .CMsgGuildPersonaInfo guild_persona_infos = 1;
 }
 
 message CMsgGuildFeedEvent {
@@ -131,8 +129,8 @@ message CMsgGuildFeedEvent {
 }
 
 message CMsgClientToGCCreateGuild {
-	optional dota.CMsgGuildInfo guild_info = 1;
-	optional dota.EGuildChatType guild_chat_type = 2 [default = k_EGuildChatType_Unspecified];
+	optional .CMsgGuildInfo guild_info = 1;
+	optional .EGuildChatType guild_chat_type = 2 [default = k_EGuildChatType_Unspecified];
 }
 
 message CMsgClientToGCCreateGuildResponse {
@@ -153,16 +151,17 @@ message CMsgClientToGCCreateGuildResponse {
 		k_eGuildLimit = 13;
 		k_eInvalidMotD = 14;
 		k_eBlocked = 15;
+		k_eFreeTrialNotAllowed = 16;
 	}
 
-	optional dota.CMsgClientToGCCreateGuildResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCCreateGuildResponse.EResponse result = 1 [default = k_eInternalError];
 	optional uint32 guild_id = 2;
 }
 
 message CMsgClientToGCSetGuildInfo {
 	optional uint32 guild_id = 1;
-	optional dota.CMsgGuildInfo guild_info = 2;
-	optional dota.EGuildChatType guild_chat_type = 3 [default = k_EGuildChatType_Unspecified];
+	optional .CMsgGuildInfo guild_info = 2;
+	optional .EGuildChatType guild_chat_type = 3 [default = k_EGuildChatType_Unspecified];
 }
 
 message CMsgClientToGCSetGuildInfoResponse {
@@ -184,7 +183,7 @@ message CMsgClientToGCSetGuildInfoResponse {
 		k_eBlocked = 14;
 	}
 
-	optional dota.CMsgClientToGCSetGuildInfoResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCSetGuildInfoResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCRequestGuildData {
@@ -202,18 +201,18 @@ message CMsgClientToGCRequestGuildDataResponse {
 		k_eNotMember = 6;
 	}
 
-	optional dota.CMsgClientToGCRequestGuildDataResponse.EResponse result = 1 [default = k_eInternalError];
-	optional dota.CMsgGuildData guild_data = 2;
+	optional .CMsgClientToGCRequestGuildDataResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgGuildData guild_data = 2;
 }
 
 message CMsgGCToClientGuildDataUpdated {
-	optional dota.CMsgGuildData guild_data = 1;
+	optional .CMsgGuildData guild_data = 1;
 	optional uint32 update_flags = 2;
 }
 
 message CMsgGCToClientGuildMembersDataUpdated {
 	optional uint32 guild_id = 1;
-	repeated dota.CMsgGuildMember members_data = 2;
+	repeated .CMsgGuildMember members_data = 2;
 }
 
 message CMsgClientToGCRequestGuildMembership {
@@ -228,30 +227,12 @@ message CMsgClientToGCRequestGuildMembershipResponse {
 		k_eTimeout = 4;
 	}
 
-	optional dota.CMsgClientToGCRequestGuildMembershipResponse.EResponse result = 1 [default = k_eInternalError];
-	optional dota.CMsgAccountGuildMemberships guild_memberships = 2;
+	optional .CMsgClientToGCRequestGuildMembershipResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgAccountGuildMemberships guild_memberships = 2;
 }
 
 message CMsgGCToClientGuildMembershipUpdated {
-	optional dota.CMsgAccountGuildMemberships guild_memberships = 1;
-}
-
-message CMsgClientToGCRequestGuildSummary {
-	optional uint32 guild_id = 1;
-}
-
-message CMsgClientToGCRequestGuildSummaryResponse {
-	enum EResponse {
-		k_eInternalError = 0;
-		k_eSuccess = 1;
-		k_eTooBusy = 2;
-		k_eDisabled = 3;
-		k_eTimeout = 4;
-		k_eInvalidGuild = 5;
-	}
-
-	optional dota.CMsgClientToGCRequestGuildSummaryResponse.EResponse result = 1 [default = k_eInternalError];
-	optional dota.CMsgGuildSummary guild_summary = 2;
+	optional .CMsgAccountGuildMemberships guild_memberships = 1;
 }
 
 message CMsgClientToGCJoinGuild {
@@ -273,7 +254,7 @@ message CMsgClientToGCJoinGuildResponse {
 		k_eGuildRankTooLow = 10;
 	}
 
-	optional dota.CMsgClientToGCJoinGuildResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCJoinGuildResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCLeaveGuild {
@@ -292,7 +273,7 @@ message CMsgClientToGCLeaveGuildResponse {
 		k_eLastAdmin = 7;
 	}
 
-	optional dota.CMsgClientToGCLeaveGuildResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCLeaveGuildResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCKickGuildMember {
@@ -314,7 +295,7 @@ message CMsgClientToGCKickGuildMemberResponse {
 		k_eCantKickSelf = 9;
 	}
 
-	optional dota.CMsgClientToGCKickGuildMemberResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCKickGuildMemberResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCSetGuildMemberRole {
@@ -338,7 +319,7 @@ message CMsgClientToGCSetGuildMemberRoleResponse {
 		k_eAdminViolation = 10;
 	}
 
-	optional dota.CMsgClientToGCSetGuildMemberRoleResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCSetGuildMemberRoleResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCInviteToGuild {
@@ -363,7 +344,7 @@ message CMsgClientToGCInviteToGuildResponse {
 		k_eInvalidUser = 12;
 	}
 
-	optional dota.CMsgClientToGCInviteToGuildResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCInviteToGuildResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCDeclineInviteToGuild {
@@ -381,7 +362,7 @@ message CMsgClientToGCDeclineInviteToGuildResponse {
 		k_eNoInviteFound = 6;
 	}
 
-	optional dota.CMsgClientToGCDeclineInviteToGuildResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCDeclineInviteToGuildResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCAcceptInviteToGuild {
@@ -403,7 +384,7 @@ message CMsgClientToGCAcceptInviteToGuildResponse {
 		k_eAlreadyInGuild = 10;
 	}
 
-	optional dota.CMsgClientToGCAcceptInviteToGuildResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCAcceptInviteToGuildResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCCancelInviteToGuild {
@@ -423,7 +404,7 @@ message CMsgClientToGCCancelInviteToGuildResponse {
 		k_eNoPermissions = 7;
 	}
 
-	optional dota.CMsgClientToGCCancelInviteToGuildResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCCancelInviteToGuildResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCAddGuildRole {
@@ -449,7 +430,7 @@ message CMsgClientToGCAddGuildRoleResponse {
 		k_eBlocked = 12;
 	}
 
-	optional dota.CMsgClientToGCAddGuildRoleResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCAddGuildRoleResponse.EResponse result = 1 [default = k_eInternalError];
 	optional uint32 role_id = 2;
 }
 
@@ -477,7 +458,7 @@ message CMsgClientToGCModifyGuildRoleResponse {
 		k_eBlocked = 12;
 	}
 
-	optional dota.CMsgClientToGCModifyGuildRoleResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCModifyGuildRoleResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCRemoveGuildRole {
@@ -500,7 +481,7 @@ message CMsgClientToGCRemoveGuildRoleResponse {
 		k_eCantRemoveDefaultRole = 10;
 	}
 
-	optional dota.CMsgClientToGCRemoveGuildRoleResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCRemoveGuildRoleResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCSetGuildRoleOrder {
@@ -523,7 +504,7 @@ message CMsgClientToGCSetGuildRoleOrderResponse {
 		k_eAdminViolation = 9;
 	}
 
-	optional dota.CMsgClientToGCSetGuildRoleOrderResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCSetGuildRoleOrderResponse.EResponse result = 1 [default = k_eInternalError];
 	repeated uint32 confirmed_role_ids = 2;
 }
 
@@ -543,9 +524,9 @@ message CMsgClientToGCRequestGuildFeedResponse {
 		k_eNoPermissions = 6;
 	}
 
-	optional dota.CMsgClientToGCRequestGuildFeedResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCRequestGuildFeedResponse.EResponse result = 1 [default = k_eInternalError];
 	optional uint32 guild_id = 2;
-	repeated dota.CMsgGuildFeedEvent feed_events = 3;
+	repeated .CMsgGuildFeedEvent feed_events = 3;
 }
 
 message CMsgGCToClientGuildFeedUpdated {
@@ -568,7 +549,7 @@ message CMsgClientToGCAddPlayerToGuildChatResponse {
 		k_eSteamChatNotEnabled = 7;
 	}
 
-	optional dota.CMsgClientToGCAddPlayerToGuildChatResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCAddPlayerToGuildChatResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgFindGuildByTagResponse {
@@ -582,15 +563,15 @@ message CMsgFindGuildByTagResponse {
 		k_eGuildNotFound = 6;
 	}
 
-	optional dota.CMsgFindGuildByTagResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgFindGuildByTagResponse.EResponse result = 1 [default = k_eInternalError];
 	optional uint32 guild_id = 2;
-	optional dota.CMsgGuildSummary guild_summary = 3;
+	optional .CMsgGuildSummary guild_summary = 3;
 }
 
 message CMsgSearchForOpenGuildsResponse {
 	message SearchResult {
 		optional uint32 guild_id = 1;
-		optional dota.CMsgGuildSummary guild_summary = 2;
+		optional .CMsgGuildSummary guild_summary = 2;
 	}
 
 	enum EResponse {
@@ -601,8 +582,8 @@ message CMsgSearchForOpenGuildsResponse {
 		k_eTimeout = 4;
 	}
 
-	optional dota.CMsgSearchForOpenGuildsResponse.EResponse result = 1 [default = k_eInternalError];
-	repeated dota.CMsgSearchForOpenGuildsResponse.SearchResult search_results = 2;
+	optional .CMsgSearchForOpenGuildsResponse.EResponse result = 1 [default = k_eInternalError];
+	repeated .CMsgSearchForOpenGuildsResponse.SearchResult search_results = 2;
 	optional bool use_whitelist = 3;
 }
 
@@ -630,7 +611,7 @@ message CMsgClientToGCReportGuildContentResponse {
 		k_eFlagsInvalid = 6;
 	}
 
-	optional dota.CMsgClientToGCReportGuildContentResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgClientToGCReportGuildContentResponse.EResponse result = 1 [default = k_eInternalError];
 }
 
 message CMsgClientToGCRequestAccountGuildPersonaInfo {
@@ -647,8 +628,8 @@ message CMsgClientToGCRequestAccountGuildPersonaInfoResponse {
 		k_eInvalidAccount = 5;
 	}
 
-	optional dota.CMsgClientToGCRequestAccountGuildPersonaInfoResponse.EResponse result = 1 [default = k_eInternalError];
-	optional dota.CMsgAccountGuildsPersonaInfo persona_info = 2;
+	optional .CMsgClientToGCRequestAccountGuildPersonaInfoResponse.EResponse result = 1 [default = k_eInternalError];
+	optional .CMsgAccountGuildsPersonaInfo persona_info = 2;
 }
 
 message CMsgClientToGCRequestAccountGuildPersonaInfoBatch {
@@ -665,6 +646,6 @@ message CMsgClientToGCRequestAccountGuildPersonaInfoBatchResponse {
 		k_eInvalidRequest = 5;
 	}
 
-	optional dota.CMsgClientToGCRequestAccountGuildPersonaInfoBatchResponse.EResponse result = 1 [default = k_eInternalError];
-	repeated dota.CMsgAccountGuildsPersonaInfo persona_infos = 2;
+	optional .CMsgClientToGCRequestAccountGuildPersonaInfoBatchResponse.EResponse result = 1 [default = k_eInternalError];
+	repeated .CMsgAccountGuildsPersonaInfo persona_infos = 2;
 }
